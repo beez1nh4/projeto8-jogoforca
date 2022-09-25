@@ -40,6 +40,12 @@ img{
     font-size: 80px;
     margin-left: 10px;
 }
+.win{
+    color: #00c04b;
+}
+.lose{
+    color: red;
+}
 .letters{
     display: flex;
     justify-content: space-between;

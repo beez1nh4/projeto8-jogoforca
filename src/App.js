@@ -29,6 +29,7 @@ export default function App() {
     const [lettersdiscovered, setLettersDiscovered] = useState(newLettersDiscovered)
     const [text, setText] = useState("")
     console.log(word)
+    const [win, setWin] = useState(false)
 
     const str = 'oí';
 const parsed2 = str.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');
@@ -69,9 +70,7 @@ console.log("parsedex", parsed2);
     }
 
     function guessWord(){
-        if(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase()){
-            alert("Ganhou!!")
-        }
+        setWin(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
     }
 
     return (
@@ -82,8 +81,8 @@ console.log("parsedex", parsed2);
                     <button className="choose" onClick={startGame}>Escolher palavra!</button>
                     <div className={display}>
                         {word.map((letterinarray, index) => (
-                            <p className="space"
-                                key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase()) ? letterinarray : "_"}</p>
+                            <p className= {"space "+ (win ? "win" : "")}
+                                key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase() ) || win? letterinarray : "_"}</p>
                         ))}
                     </div>
                 </div>
