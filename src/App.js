@@ -17,19 +17,22 @@ function comparador() {
 
 
 export default function App() {
+
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-    const [letterhidden, setLetterHidden] = useState("_")
     const [errors, setErrors] = useState(0);
     const [display, setDisplay] = useState("display-none")
     const [operateLetter, setOperateLetter] = useState("letter disabled")
     const [operateInput, setOperateInput] = useState("word disabled")
+    const parsed = palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');
+    console.log("parsed",parsed);
+    const wordTreated = parsed.split('')
     const word = palavras[0].split('')
     const imgs = [forca0, forca1, forca2, forca3, forca4, forca5, forca6]
     let newLettersDiscovered = []
     const [lettersdiscovered, setLettersDiscovered] = useState(newLettersDiscovered)
     console.log(word)
 
-    function Letter({letters}) {
+    function Letter({ letters }) {
         return (
             <>
                 {letters.map((l, index) => {
@@ -39,23 +42,30 @@ export default function App() {
         )
     }
 
-    function startGame(){
+    function startGame() {
         setDisplay("spaces")
         setOperateLetter("letter enabled")
         setOperateInput("word enabled")
     }
+    
+    function treatArray(array) {
+        return array.filter((i,
+            index) => array.indexOf(i) === index);
+    }
 
-    function chooseLetter(e){
+    console.log("treat", treatArray(wordTreated))
+    function chooseLetter(e) {
         let letterpicked = e.target.value
         console.log(letterpicked.toLowerCase())
-            if (word.includes(letterpicked.toLowerCase())){
-                newLettersDiscovered = [...lettersdiscovered, letterpicked]
-                console.log("new", newLettersDiscovered)
-                setLettersDiscovered(newLettersDiscovered)
-            } else{
-                setErrors(errors+1)
-            }
+        if (word.includes(letterpicked.toLowerCase())) {
+            newLettersDiscovered = [...lettersdiscovered, letterpicked]
+            setLettersDiscovered(newLettersDiscovered)
         }
+        else {
+            setErrors(errors + 1)
+        }
+        console.log(newLettersDiscovered)
+    }
 
     return (
         <div className="content">
@@ -66,9 +76,9 @@ export default function App() {
                     <div className={display}>
                         {word.map((letterinarray, index) => (
                             <p className="space"
-                                key={index} >{lettersdiscovered.includes(letterinarray.toUpperCase()) ? letterinarray : "_"}</p>
-                        ))}                    
-                        </div>
+                                key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase()) ? letterinarray : "_"}</p>
+                        ))}
+                    </div>
                 </div>
             </div>
             <div className="letters">
