@@ -18,19 +18,22 @@ function comparador() {
 
 export default function App() {
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    const [letterhidden, setLetterHidden] = useState("_")
     const [errors, setErrors] = useState(0);
     const [display, setDisplay] = useState("display-none")
     const [operateLetter, setOperateLetter] = useState("letter disabled")
     const [operateInput, setOperateInput] = useState("word disabled")
     const word = palavras[0].split('')
     const imgs = [forca0, forca1, forca2, forca3, forca4, forca5, forca6]
+    let newLettersDiscovered = []
+    const [lettersdiscovered, setLettersDiscovered] = useState(newLettersDiscovered)
     console.log(word)
 
-    function Letter({ letters }) {
+    function Letter({letters}) {
         return (
             <>
                 {letters.map((l, index) => {
-                    return <button key={index} className={operateLetter}>{l}</button>;
+                    return <button key={index} value={l} onClick={chooseLetter} className={operateLetter}>{l}</button>;
                 })}
             </>
         )
@@ -42,6 +45,18 @@ export default function App() {
         setOperateInput("word enabled")
     }
 
+    function chooseLetter(e){
+        let letterpicked = e.target.value
+        console.log(letterpicked.toLowerCase())
+            if (word.includes(letterpicked.toLowerCase())){
+                newLettersDiscovered = [...lettersdiscovered, letterpicked]
+                console.log("new", newLettersDiscovered)
+                setLettersDiscovered(newLettersDiscovered)
+            } else{
+                setErrors(errors+1)
+            }
+        }
+
     return (
         <div className="content">
             <div className="upper">
@@ -51,7 +66,7 @@ export default function App() {
                     <div className={display}>
                         {word.map((letterinarray, index) => (
                             <p className="space"
-                                key={index} letterinarray= {letterinarray}>_</p>
+                                key={index} >{lettersdiscovered.includes(letterinarray.toUpperCase()) ? letterinarray : "_"}</p>
                         ))}                    
                         </div>
                 </div>
