@@ -23,12 +23,11 @@ export default function App() {
     const [display, setDisplay] = useState("display-none")
     const [lettersclicked, setLettersClicked] = useState(letters)
     const [operateInput, setOperateInput] = useState("word disabled")
-    const parsed = palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '')
-    console.log("parsed",parsed)
     const word = palavras[0].split('')
     const imgs = [forca0, forca1, forca2, forca3, forca4, forca5, forca6]
     let newLettersDiscovered = []
     const [lettersdiscovered, setLettersDiscovered] = useState(newLettersDiscovered)
+    const [text, setText] = useState("")
     console.log(word)
 
     const str = 'oí';
@@ -69,6 +68,12 @@ console.log("parsedex", parsed2);
         }}
     }
 
+    function guessWord(){
+        if(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase()){
+            alert("Ganhou!!")
+        }
+    }
+
     return (
         <div className="content">
             <div className="upper">
@@ -88,8 +93,8 @@ console.log("parsedex", parsed2);
             </div>
             <div className="answer">
                 <p className="know">Já sei a palavra!</p>
-                <input className={operateInput}></input>
-                <button className="try">Chutar</button>
+                <input onChange={(e)=> setText(e.target.value)} value={text}className={operateInput}></input>
+                <button onClick={guessWord} className="try">Chutar</button>
             </div>
         </div>
 
