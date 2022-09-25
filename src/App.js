@@ -6,8 +6,8 @@ import forca2 from "./assets/forca2.png"
 import forca3 from "./assets/forca3.png"
 import forca4 from "./assets/forca4.png"
 import forca5 from "./assets/forca5.png"
-import forca6 from "./assets/forca5.png"
-//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
+import forca6 from "./assets/forca6.png"
+
 
 palavras.sort(comparador); // embaralha a array
 
@@ -28,13 +28,11 @@ export default function App() {
     let newLettersDiscovered = []
     const [lettersdiscovered, setLettersDiscovered] = useState(newLettersDiscovered)
     const [text, setText] = useState("")
-    console.log(word)
+    //console.log(word)
     const [win, setWin] = useState(false)
-
-    const str = 'oí';
-const parsed2 = str.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '');
-console.log("parsedex", parsed2);
-    
+    const [lose, setLose] = useState(false)
+    const [disabled, setDisabled] = useState(true)
+    const treatedWord = treatArray(palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').split(''))
     function Letter({ letters }) {
         return (
             <>
@@ -46,9 +44,16 @@ console.log("parsedex", parsed2);
     }
 
     function startGame() {
+        setErrors(0)
         setDisplay("spaces")
         setOperateInput("word enabled")
         setLettersClicked([]);
+        setLettersDiscovered([])
+        setText("")
+        setWin(false)
+        setLose(false)
+        setDisabled(false)
+        palavras.sort(comparador)
     }
     
     function treatArray(array) {
@@ -63,26 +68,43 @@ console.log("parsedex", parsed2);
         if (word.includes(letterpicked.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())) {
             newLettersDiscovered = [...lettersdiscovered, letterpicked.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '')]
             setLettersDiscovered(newLettersDiscovered)
+            if(newLettersDiscovered.length === treatedWord.length){
+                setWin(true)
+                setDisabled(true)
+                setOperateInput("word disabled")
+                setLettersClicked(letters)
+            }
         }
         else {
             setErrors(errors + 1)
+            if (errors+1 === 6){
+                setLose(true)
+                setDisabled(true)
+                setOperateInput("word disabled")
+                setLettersClicked(letters)
+            }
         }}
     }
-
+        
     function guessWord(){
-        setWin(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
+        setDisabled(true)
+        if ((!win && operateInput!=="word disabled" )|| !lose && operateInput!=="word disabled")
+        {setWin(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
+        setLose(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() !== palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
+        setOperateInput("word disabled")
+        setLettersClicked(letters);}
     }
-
+    
     return (
         <div className="content">
             <div className="upper">
-                <img src={imgs[errors]} alt="" />
+                <img src={lose ?imgs[6] :imgs[errors]} alt="" />
                 <div className="side">
                     <button className="choose" onClick={startGame}>Escolher palavra!</button>
                     <div className={display}>
                         {word.map((letterinarray, index) => (
-                            <p className= {"space "+ (win ? "win" : "")}
-                                key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase() ) || win? letterinarray : "_"}</p>
+                            <p className= {"space "+ (win ? "win" : "") + (lose ? "lose" : "")}
+                                key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase() ) || win || lose? letterinarray : "_"}</p>
                         ))}
                     </div>
                 </div>
@@ -92,7 +114,7 @@ console.log("parsedex", parsed2);
             </div>
             <div className="answer">
                 <p className="know">Já sei a palavra!</p>
-                <input onChange={(e)=> setText(e.target.value)} value={text}className={operateInput}></input>
+                <input onChange={(e)=> setText(e.target.value)} value={text}className={operateInput} disabled={disabled}></input>
                 <button onClick={guessWord} className="try">Chutar</button>
             </div>
         </div>
