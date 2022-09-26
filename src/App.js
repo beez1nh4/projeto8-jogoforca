@@ -33,11 +33,12 @@ export default function App() {
     const [lose, setLose] = useState(false)
     const [disabled, setDisabled] = useState(true)
     const treatedWord = treatArray(palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').split(''))
+    const [operateButton, setOperateButton] = useState("try disabled2")
     function Letter({ letters }) {
         return (
             <>
                 {letters.map((l, index) => {
-                    return <button key={index} value={l} onClick={chooseLetter} className={lettersclicked.includes(l) ? "letter disabled" : "letter enabled"}>{l}</button>;
+                    return <button key={index} value={l} onClick={chooseLetter} className={lettersclicked.includes(l) ? "letter disabled" : "letter enabled"} data-identifier="letter">{l}</button>;
                 })}
             </>
         )
@@ -53,6 +54,7 @@ export default function App() {
         setWin(false)
         setLose(false)
         setDisabled(false)
+        setOperateButton("try enabled2")
         palavras.sort(comparador)
     }
     
@@ -72,6 +74,7 @@ export default function App() {
                 setWin(true)
                 setDisabled(true)
                 setOperateInput("word disabled")
+                setOperateButton("try disabled2")
                 setLettersClicked(letters)
             }
         }
@@ -81,6 +84,7 @@ export default function App() {
                 setLose(true)
                 setDisabled(true)
                 setOperateInput("word disabled")
+                setOperateButton("try disabled2")
                 setLettersClicked(letters)
             }
         }}
@@ -88,20 +92,21 @@ export default function App() {
         
     function guessWord(){
         setDisabled(true)
-        if ((!win && operateInput!=="word disabled" )|| !lose && operateInput!=="word disabled")
+        if ((!win && operateInput!=="word disabled" )|| (!lose && operateInput!=="word disabled"))
         {setWin(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() === palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
         setLose(text.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase() !== palavras[0].normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toLowerCase())
         setOperateInput("word disabled")
+        setOperateButton("try disabled2")
         setLettersClicked(letters);}
     }
     
     return (
         <div className="content">
             <div className="upper">
-                <img src={lose ?imgs[6] :imgs[errors]} alt="" />
+                <img data-identifier="game-image" src={lose ?imgs[6] :imgs[errors]} alt="" />
                 <div className="side">
-                    <button className="choose" onClick={startGame}>Escolher palavra!</button>
-                    <div className={display}>
+                    <button data-identifier="choose-word" className="choose" onClick={startGame}>Escolher palavra!</button>
+                    <div data-identifier="word" className={display}>
                         {word.map((letterinarray, index) => (
                             <p className= {"space "+ (win ? "win" : "") + (lose ? "lose" : "")}
                                 key={index} >{lettersdiscovered.includes(letterinarray.normalize('NFD').replace(/([\u0300-\u036f]|[^0-9a-zA-Z])/g, '').toUpperCase() ) || win || lose? letterinarray : "_"}</p>
@@ -114,8 +119,8 @@ export default function App() {
             </div>
             <div className="answer">
                 <p className="know">Já sei a palavra!</p>
-                <input onChange={(e)=> setText(e.target.value)} value={text}className={operateInput} disabled={disabled}></input>
-                <button onClick={guessWord} className="try">Chutar</button>
+                <input data-identifier="type-guess" onChange={(e)=> setText(e.target.value)} value={text}className={operateInput} disabled={disabled}></input>
+                <button data-identifier="guess-button" onClick={guessWord} className={operateButton}>Chutar</button>
             </div>
         </div>
 
